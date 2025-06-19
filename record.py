@@ -1,4 +1,5 @@
 from pynput import *
+import pickle
 import time
 settings = None
 last_time = 0
@@ -7,25 +8,40 @@ def callback_move_mouse(x,y,injected):
     global last_time
     global settings
     global inputs
+    current_time = time.time_ns()-last_time
+    last_time = time.time_ns()
+    inputs.append([current_time,"move",x,y])
 def callback_button_mouse(x,y,button,pressed,injected):
     global last_time
     global settings
     global inputs
+    current_time = time.time_ns()-last_time
+    last_time = time.time_ns()
+    inputs.append([current_time,"button",x,y,pressed])
 def callback_scroll_mouse(x,y,dx,dy,injected):
     global last_time
     global settings
     global inputs
+    current_time = time.time_ns()-last_time
+    last_time = time.time_ns()
+    inputs.append([current_time,"scroll",x,y,dx,dy])
 def callback_press_key(key,injected):
     global last_time
     global settings
     global inputs
-    if key == settings["start"] or key == settings["stop"]:
+    if key != settings["start"] and key != settings["stop"]:
+        current_time = time.time_ns()-last_time
+        last_time = time.time_ns()
+        inputs.append([current_time,"key_down",key])
         return
 def callback_release_key(key,injected):
     global last_time
     global settings
     global inputs
-    if key == settings["start"] or key == settings["stop"]:
+    if key != settings["start"] and key != settings["stop"]:
+        current_time = time.time_ns()-last_time
+        last_time = time.time_ns()
+        inputs.append([current_time,"key_up",key])
         return
 def begin(macro_settings):
     # load settings
@@ -34,9 +50,8 @@ def begin(macro_settings):
     global inputs
     last_time = time.time_ns()
     settings = macro_settings
-    inputs = [
-            ["move",mouse.position[0],mouse.position[1]]
-            ]
+    mouse_controller = mouse.Controller()
+    inputs = [[0,"move",mouse_controller.position[0],mouse_controller.position[1]]]
 
     # setup callbacks
     mouse_listener = mouse.Listener(
@@ -57,4 +72,7 @@ def begin(macro_settings):
             if event.key == settings["stop"]:
                 mouse_listener.stop()
                 keyboard_listener.stop()
+                write_inputs = open(settings["file"],"wb")
+                pickle.dump(inputs,write_inputs)
+                write_inputs.close()
                 return
