@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser(description="llmacro - by EN")
 parser.add_argument("file",type=str,help="Where to record/play macros")
 parser.add_argument("--play",action="store_true",help="playback mode")
 parser.add_argument("--loop",action="store_true",help="loop mode")
+parser.add_argument("--start",action="store_true",help="start without asking")
 arguments = parser.parse_args()
 
 # input settings
@@ -24,15 +25,17 @@ macro_settings = {
         "file":arguments.file,
         "play":arguments.play,
         "loop":arguments.loop,
+        "await":arguments.start,
         "start":keyboard.KeyCode.from_char(start_macro),
         "stop":keyboard.KeyCode.from_char(stop_macro)
         }
 
 # begin playback/recording
-with keyboard.Events() as events:
-    for event in events:
-        if event.key == macro_settings["start"]:
-            break
+if not macro_settings["await"]:
+    with keyboard.Events() as events:
+        for event in events:
+            if event.key == macro_settings["start"]:
+                break
 if macro_settings["play"]:
     print("begin playing macro")
     playback.begin(macro_settings)

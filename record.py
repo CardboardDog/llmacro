@@ -4,6 +4,8 @@ import time
 settings = None
 last_time = 0
 inputs = []
+
+# callbacks for recording the keys
 def callback_move_mouse(x,y,injected):
     global last_time
     global settings
@@ -17,7 +19,7 @@ def callback_button_mouse(x,y,button,pressed,injected):
     global inputs
     current_time = time.time_ns()-last_time
     last_time = time.time_ns()
-    inputs.append([current_time,"button",x,y,pressed])
+    inputs.append([current_time,"button",x,y,button,pressed])
 def callback_scroll_mouse(x,y,dx,dy,injected):
     global last_time
     global settings
@@ -43,6 +45,8 @@ def callback_release_key(key,injected):
         last_time = time.time_ns()
         inputs.append([current_time,"key_up",key])
         return
+
+# start recording
 def begin(macro_settings):
     # load settings
     global last_time
