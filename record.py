@@ -10,30 +10,30 @@ def callback_move_mouse(x,y,injected):
     global last_time
     global settings
     global inputs
-    current_time = time.time_ns()-last_time
-    last_time = time.time_ns()
+    current_time = time.time()-last_time
+    last_time = time.time()
     inputs.append([current_time,"move",x,y])
 def callback_button_mouse(x,y,button,pressed,injected):
     global last_time
     global settings
     global inputs
-    current_time = time.time_ns()-last_time
-    last_time = time.time_ns()
+    current_time = time.time()-last_time
+    last_time = time.time()
     inputs.append([current_time,"button",x,y,button,pressed])
 def callback_scroll_mouse(x,y,dx,dy,injected):
     global last_time
     global settings
     global inputs
-    current_time = time.time_ns()-last_time
-    last_time = time.time_ns()
+    current_time = time.time()-last_time
+    last_time = time.time()
     inputs.append([current_time,"scroll",x,y,dx,dy])
 def callback_press_key(key,injected):
     global last_time
     global settings
     global inputs
     if key != settings["start"] and key != settings["stop"]:
-        current_time = time.time_ns()-last_time
-        last_time = time.time_ns()
+        current_time = time.time()-last_time
+        last_time = time.time()
         inputs.append([current_time,"key_down",key])
         return
 def callback_release_key(key,injected):
@@ -41,8 +41,8 @@ def callback_release_key(key,injected):
     global settings
     global inputs
     if key != settings["start"] and key != settings["stop"]:
-        current_time = time.time_ns()-last_time
-        last_time = time.time_ns()
+        current_time = time.time()-last_time
+        last_time = time.time()
         inputs.append([current_time,"key_up",key])
         return
 
@@ -52,7 +52,7 @@ def begin(macro_settings):
     global last_time
     global settings
     global inputs
-    last_time = time.time_ns()
+    last_time = time.time()
     settings = macro_settings
     mouse_controller = mouse.Controller()
     inputs = [[0,"move",mouse_controller.position[0],mouse_controller.position[1]]]

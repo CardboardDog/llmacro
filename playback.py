@@ -1,6 +1,5 @@
 from pynput import *
 from threading import Event
-import signal
 import pickle
 inputs = []
 settings = None
@@ -64,7 +63,7 @@ def begin(macro_settings):
     # begin playing
     while not stopped:
         for input_event in inputs:
-            sleep_event.wait(input_event[0]/1000000000) # convert nanoseconds to seconds
+            sleep_event.wait(input_event[0])
             if stopped:
                return 
             handle_input(input_event)
